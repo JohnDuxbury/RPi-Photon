@@ -1,0 +1,41 @@
+Command History from RPi to create an FM Transmitter on RPiW
+//Install
+sudo apt update
+sudo apt upgrade
+sudo apt install -y sox make gcc g++ git libmp3lame-dev libsox-fmt-mp3
+sudo apt-get install libraspberrypi-dev raspberrypi-kernel-headers
+cd ~
+git clone https://github.com/pimylifeup/fm_transmitter.git
+cd ~/fm_transmitter
+
+Update Makefile:https://github.com/markondej/fm_transmitter/issues/104
+all: main.o mailbox.o sample.o wave_reader.o transmitter.o
+        # Original
+	# g++ -L/opt/vc/lib -lm -lpthread -lbcm_host -o $(EXECUTABLE) main.o mailbox.o sample.o wave_reader.o transmitter.o
+        # Alpine + musl
+	g++ -L/opt/vc/lib/ -o $(EXECUTABLE) main.o mailbox.o sample.o wave_reader.o transmitter.o -lm -lpthread -lbcm_host
+make
+wget https://files.pimylifeup.com/pirateradio/boxcat_games_epic_song.wav
+sox /home/jd/fm_transmitter/acoustic_guitar_duet.wav -r 22050 -c 1 -b 16 -t wav - | sudo ./fm_transmitter -f 103.3 -
+
+#This Section Failed - TBR
+cd /usr/src
+sudo git clone https://code.videolan.org/videolan/x264.git
+cd x264
+sudo ./configure --host=arm-unknown-linux-gnueabi --enable-static --disable-opencl
+**Set up FFMpeg**
+sudo make
+Confirm PiOS =  cat /etc/os-release
+sudo make install
+cd /usr/src
+sudo git clone git://source.ffmpeg.org/ffmpeg.git ffmpeg
+cd ffmpeg
+sudo ./configure --arch=armel --target-os=linux --enable-gpl --enable-libx264 --enable-nonfree
+sudo make -j4
+sudo make install
+cd ~/fm_transmitter
+sudo python ./PiStation.py -f 100.3 starwars.mp3
+###
+
+sudo ./fm_transmitter -f 102.0 acoustic_guitar_duet.wav
+sox /home/pi/fm_transmitter/boxcat_games_epic_song.wav -r 22050 -c 1 -b 16 -t wav
