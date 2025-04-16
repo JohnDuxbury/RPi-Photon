@@ -1,0 +1,10 @@
+**Install OpenWRT**
+sudo rpi-eeprom-update
+#if updates available
+sudo rpi-eeprom-update -a
+sudo reboot
+#Load Image and boot - Press Enter
+To set IP
+uci set network.lan.ipaddr=192.168.2.190
+uci commit
+/etc/init.d/network restart
