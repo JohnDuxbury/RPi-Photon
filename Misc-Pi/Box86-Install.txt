@@ -1,0 +1,33 @@
+**Box86 Install**
+#https://pimylifeup.com/raspberry-pi-x86/
+#https://pimylifeup.com/raspberry-pi-x86/
+sudo apt install git build-essential cmake
+git clone https://github.com/ptitSeb/box86
+sudo dpkg --add-architecture armhf
+sudo apt update
+sudo apt install gcc-arm-linux-gnueabihf libc6:armhf
+cd ~/box86
+mkdir build
+cd build
+cmake .. -DRPI4ARM64=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo
+make -j$(nproc)
+sudo make install
+sudo systemctl restart systemd-binfmt
+sudo reboot
+cd ~
+wget https://files.teamspeak-services.com/releases/server/3.13.3/teamspeak3-server_linux_x86-3.13.3.tar.bz2
+tar -xvpf teamspeak3-server_linux_x86-3.13.3.tar.bz2
+#--extract (-x) - Extract the entire archive or one or more files from an archive
+#-v (verbose) print names of files being extracted
+#-f = filename
+cd teamspeak3-server_linux_x86
+touch .ts3server_license_accepted
+./ts3server
+#On Pi5 - need to adjust page file if error
+#https://forums.raspberrypi.com/viewtopic.php?t=358453
+getconf PAGESIZE
+sudo nano /boot/firmware/config.txt
+# Add - kernel=kernel8.img - to the top of the config.txt filename
+sudo reboot
+#Then check settings worked
+getconf PAGESIZE
