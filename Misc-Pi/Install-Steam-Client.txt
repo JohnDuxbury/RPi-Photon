@@ -1,0 +1,6 @@
+**Install Steam Client**
+sudo apt install libappindicator1 libnm0 libtcmalloc-minimal4
+sudo nano /etc/profile.d/steam.sh
+sudo reboot
+wget https://steamcdn-a.akamaihd.net/client/installer/steam.deb
+sudo dpkg -i steam.deb
